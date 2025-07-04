@@ -5044,9 +5044,8 @@ public class MainActivity extends Activity {
     }
 
     public boolean supportsHDR() {
-        // we also require the device have sufficient memory to do the processing
-        // also require at least Android 5, for the Renderscript support in HDRProcessor
-        return( Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && large_heap_memory >= 128 && preview.supportsExpoBracketing() );
+        // HDR functionality has been disabled
+        return false;
     }
 
     public boolean supportsExpoBracketing() {
