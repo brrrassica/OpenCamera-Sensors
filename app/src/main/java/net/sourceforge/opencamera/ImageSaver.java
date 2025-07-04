@@ -60,7 +60,7 @@ public class ImageSaver extends Thread {
     private final Paint p = new Paint();
 
     private final MainActivity main_activity;
-    private final HDRProcessor hdrProcessor;
+    private final HDRProcessorBitmap hdrProcessor;
     private final PanoramaProcessor panoramaProcessor;
 
     /* We use a separate count n_images_to_save, rather than just relying on the queue size, so we can take() an image from queue,
@@ -278,7 +278,8 @@ public class ImageSaver extends Thread {
         this.queue_capacity = computeQueueSize(activityManager.getLargeMemoryClass());
         this.queue = new ArrayBlockingQueue<>(queue_capacity); // since we remove from the queue and then process in the saver thread, in practice the number of background photos - including the one being processed - is one more than the length of this queue
 
-        this.hdrProcessor = new HDRProcessor(main_activity, main_activity.is_test);
+        // Use HDRProcessorBitmap instead of HDRProcessor to avoid RenderScript
+        this.hdrProcessor = new HDRProcessorBitmap(main_activity, main_activity.is_test);
         this.panoramaProcessor = new PanoramaProcessor(main_activity, hdrProcessor);
 
         p.setAntiAlias(true);
@@ -1543,31 +1544,46 @@ public class ImageSaver extends Thread {
             if( MyDebug.LOG )
                 Log.d(TAG, "before HDR first bitmap: " + bitmaps.get(0) + " is mutable? " + bitmaps.get(0).isMutable());
             try {
+                // Process HDR using our Bitmap-based implementation
                 if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ) {
-                    hdrProcessor.processHDR(bitmaps, true, null, true, null, hdr_alpha, 4, true, HDRProcessor.TonemappingAlgorithm.TONEMAPALGORITHM_REINHARD, HDRProcessor.DROTonemappingAlgorithm.DROALGORITHM_GAINGAMMA); // this will recycle all the bitmaps except bitmaps.get(0), which will contain the hdr image
-                }
-                else {
+                    // Align the bitmaps first if needed
+                    List<Bitmap> alignedBitmaps = hdrProcessor.alignBitmaps(bitmaps);
+                    
+                    // Process HDR
+                    Bitmap hdrBitmap = hdrProcessor.processHDR(alignedBitmaps);
+                    
+                    // Apply tone mapping
+                    hdrBitmap = hdrProcessor.toneMap(hdrBitmap);
+                    
+                    // Replace the first bitmap with the HDR result
+                    for (int i = 0; i < bitmaps.size(); i++) {
+                        if (i == 0) {
+                            bitmaps.set(0, hdrBitmap);
+                        } else {
+                            bitmaps.get(i).recycle();
+                        }
+                    }
+                    bitmaps = bitmaps.subList(0, 1);
+                } else {
                     Log.e(TAG, "shouldn't have offered HDR as an option if not on Android 5");
                     throw new RuntimeException();
                 }
-            }
-            catch(HDRProcessorException e) {
-                Log.e(TAG, "HDRProcessorException from processHDR: " + e.getCode());
+            } catch(Exception e) {
+                Log.e(TAG, "Exception during HDR processing: " + e.getMessage());
                 e.printStackTrace();
-                if( e.getCode() == HDRProcessorException.UNEQUAL_SIZES ) {
-                    // this can happen on OnePlus 3T with old camera API with front camera, seems to be a bug that resolution changes when exposure compensation is set!
-                    main_activity.getPreview().showToast(null, R.string.failed_to_process_hdr);
-                    Log.e(TAG, "UNEQUAL_SIZES");
-                    bitmaps.clear();
-                    System.gc();
-                    main_activity.savingImage(false);
-                    return false;
+                main_activity.getPreview().showToast(null, R.string.failed_to_process_hdr);
+                Log.e(TAG, "HDR processing failed");
+                for (Bitmap bitmap : bitmaps) {
+                    if (bitmap != null && !bitmap.isRecycled()) {
+                        bitmap.recycle();
+                    }
                 }
-                else {
-                    // throw RuntimeException, as we shouldn't ever get the error INVALID_N_IMAGES, if we do it's a programming error
-                    throw new RuntimeException();
-                }
+                bitmaps.clear();
+                System.gc();
+                main_activity.savingImage(false);
+                return false;
             }
+            
             if( MyDebug.LOG ) {
                 Log.d(TAG, "HDR performance: time after creating HDR image: " + (System.currentTimeMillis() - time_s));
             }

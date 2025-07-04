@@ -1,12 +1,23 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
-    ext.kotlin_version = '1.9.0' // Updated to latest stable Kotlin version
+    // Kotlin version
+    ext.kotlin_version = '1.9.0'
+    
+    // Library versions
+    ext.camerax_version = '1.2.3'
+    ext.glide_version = '4.15.1'
+    ext.desugar_jdk_version = '2.0.3'
+    
     repositories {
         google()
         mavenCentral()
+        maven { url 'https://jitpack.io' }
+        maven { url 'https://maven.google.com' }
     }
+    
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.2.2' // Updated to latest stable version
+        classpath 'com.android.tools.build:gradle:8.2.2'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
@@ -14,9 +25,39 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        maven { url 'https://jitpack.io' }
+        maven { url 'https://maven.google.com' }
+    }
+    
+    // Configure Java 8 compatibility for all projects
+    tasks.withType(JavaCompile).configureEach {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+    
+    // Enable Java 8 features for Kotlin
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+        kotlinOptions {
+            jvmTarget = '1.8'
+            freeCompilerArgs += [
+                "-Xjvm-default=all",
+            ]
+        }
     }
 }
 
 tasks.register('clean', Delete) {
     delete rootProject.buildDir
+}
+
+// Configure project properties
+ext {
+    // SDK versions
+    androidCompileSdkVersion = 33
+    androidMinSdkVersion = 21
+    androidTargetSdkVersion = 33
+    
+    // Version information
+    versionCode = 1
+    versionName = '1.0.0'
 }

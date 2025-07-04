@@ -107,10 +107,10 @@
 
     <string name="rec_sync_waiting_for_leader">%s: Ожидание лидера</string>
     <string name="rec_sync_waiting_for_sync">%s: Ожидание синхронизации</string>
-    <string name="rec_sync_synced_to_leader">Клиент %s\n-Синх. с лидером %s</string>
+    <string name="rec_sync_synced_to_leader" formatted="false">Клиент %s\n-Синх. с лидером %s</string>
     <string name="rec_sync_leader">Лидер: %s</string>
     <string name="rec_sync_client">Клиент: %s</string>
-    <string name="rec_sync_leader_clients">Лидер %s: %s.\n</string>
+    <string name="rec_sync_leader_clients" formatted="false">Лидер %s: %s.\n</string>
     <plurals name="clients_num">
         <item quantity="one">%d клиент</item>
         <item quantity="few">%d клиента</item>
@@ -118,7 +118,7 @@
         <item quantity="other">%d клиентов</item>
     </plurals>
     <string name="rec_sync_client_syncing">-Клиент %s: синхронизация…\n</string>
-    <string name="rec_sync_client_synced">-Клиент %s: %.2f мс синхронизирован\n</string>
+    <string name="rec_sync_client_synced" formatted="false">-Клиент %s: %.2f мс синхронизирован\n</string>
     <string name="realtime">реал. время</string>
     <string name="unknown">неизвестно</string>
     

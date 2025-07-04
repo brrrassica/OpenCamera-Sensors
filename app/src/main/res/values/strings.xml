@@ -108,16 +108,16 @@
 
     <string name="rec_sync_waiting_for_leader">%s: Waiting for Leader</string>
     <string name="rec_sync_waiting_for_sync">%s: Waiting for Sync</string>
-    <string name="rec_sync_synced_to_leader">Client %s\n-Synced to Leader %s</string>
+    <string name="rec_sync_synced_to_leader" formatted="false">Client %s\n-Synced to Leader %s</string>
     <string name="rec_sync_leader">Leader: %s</string>
     <string name="rec_sync_client">Client: %s</string>
-    <string name="rec_sync_leader_clients">Leader %s: %s.\n</string>
+    <string name="rec_sync_leader_clients" formatted="false">Leader %s: %s.\n</string>
     <plurals name="clients_num">
         <item quantity="one">%d client</item>
         <item quantity="other">%d clients</item>
     </plurals>
     <string name="rec_sync_client_syncing">-Client %s: syncing…\n</string>
-    <string name="rec_sync_client_synced">-Client %s: %.2f ms sync\n</string>
+    <string name="rec_sync_client_synced" formatted="false">-Client %s: %.2f ms sync\n</string>
     <string name="realtime">realtime</string>
     <string name="unknown">unknown</string>
 
