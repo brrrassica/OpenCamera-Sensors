@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
+    namespace 'com.flightcamera.app'
     compileSdkVersion 29
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -9,7 +10,7 @@ android {
     compileOptions.encoding = 'UTF-8'
 
     defaultConfig {
-        applicationId "com.opencamera_sensors.app"
+        applicationId "com.flightcamera.app"
         minSdkVersion 19
         // Important! When we decide to change this to 30 or more, we need to add full support for scoped storage
         targetSdkVersion 29
@@ -19,7 +20,7 @@ android {
         // need build tools at least 20 at least to support ScriptIntrinsicHistogram
         // also need build tools at least 21 to avoid Google Play 64-bit warning (required from 1 August 2019)
 
-        testApplicationId "com.opencamera_extended.app.test"
+        testApplicationId "com.flightcamera.app.test"
         testInstrumentationRunner "android.test.InstrumentationTestRunner"
     }
 
