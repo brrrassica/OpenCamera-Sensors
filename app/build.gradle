@@ -29,15 +29,22 @@ android {
         testApplicationId "net.sourceforge.opencamera.test"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        // RenderScript is not used
+        // Disable RenderScript and HDR features
         renderscriptTargetApi 0
         renderscriptSupportModeEnabled false
         renderscriptNdkModeEnabled false
+        
+        // Disable HDR features
+        buildConfigField "boolean", "HDR_FEATURE_ENABLED", "false"
 
         // Build features
         buildFeatures {
-            // No RenderScript features
+            // Enable BuildConfig generation
+            buildConfig true
+            // Disable RenderScript features
             renderScript false
+            // Enable view binding if needed
+            viewBinding true
         }
 
         // Enable multiDex for large projects
@@ -46,12 +53,15 @@ android {
         // Enable vector drawable support
         vectorDrawables.useSupportLibrary = true
 
-        // Java 8 features
+            // Java 8 features
         compileOptions {
             coreLibraryDesugaringEnabled true
             sourceCompatibility JavaVersion.VERSION_1_8
             targetCompatibility JavaVersion.VERSION_1_8
         }
+        
+        // Enable multidex support
+        multiDexEnabled true
     }
 
     signingConfigs {
@@ -116,6 +126,7 @@ dependencies {
     
     // For efficient bitmap operations
     implementation 'com.github.bumptech.glide:glide:4.15.1'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.15.1'
     kapt 'com.github.bumptech.glide:compiler:4.15.1'
     
     // Testing dependencies

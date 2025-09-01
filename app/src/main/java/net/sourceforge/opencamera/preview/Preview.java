@@ -65,7 +65,7 @@ import net.sourceforge.opencamera.MyDebug;
 import net.sourceforge.opencamera.PreferenceKeys;
 import net.sourceforge.opencamera.PreferenceHandler;
 import net.sourceforge.opencamera.R;
-import net.sourceforge.opencamera.ScriptC_histogram_compute;
+import net.sourceforge.opencamera.RenderScriptStub.ScriptC_histogram_compute;
 import net.sourceforge.opencamera.TakePhoto;
 import net.sourceforge.opencamera.ToastBoxer;
 import net.sourceforge.opencamera.cameracontroller.CameraController;
@@ -135,7 +135,7 @@ public class Preview implements SurfaceHolder.Callback, TextureView.SurfaceTextu
     private final BlockingQueue<String> mVideoAvailableReporter;
 
     private RenderScript rs; // lazily created, so we don't take up resources if application isn't using renderscript
-    private ScriptC_histogram_compute histogramScript; // lazily create for performance
+    private ScriptC_histogram_compute histogramScript = new ScriptC_histogram_compute(null); // HDR functionality is disabled
     private boolean want_preview_bitmap; // whether application has requested we generate bitmap for the preview
     private Bitmap preview_bitmap;
     private long last_preview_bitmap_time_ms; // time the last preview_bitmap was updated
@@ -8134,7 +8134,7 @@ public class Preview implements SurfaceHolder.Callback, TextureView.SurfaceTextu
                 // create on the UI thread rather than doInBackground(), to avoid threading issues
                 if( MyDebug.LOG )
                     Log.d(TAG, "create histogramScript");
-                preview.histogramScript = new ScriptC_histogram_compute(preview.rs);
+                preview.histogramScript = new ScriptC_histogram_compute(null);
             }
             // take a local copy, so preview.histogramScript can be set to null whilst background thread is running
             this.histogramScriptReference = new WeakReference<>(preview.histogramScript);

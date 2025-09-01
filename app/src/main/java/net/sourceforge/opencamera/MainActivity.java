@@ -118,7 +118,7 @@ public class MainActivity extends Activity {
     private boolean settings_is_active = false;
 
     private SensorManager mSensorManager;
-    private Sensor mSensorAccelerometer;
+    private HDRProcessorStub hdrProcessor;
     private RawSensorInfo mRawSensorInfo;
 
     // components: always non-null (after onCreate())
@@ -384,6 +384,7 @@ public class MainActivity extends Activity {
         mainUI.closeExposureUI();
 
         // set up the camera and its preview
+        hdrProcessor = new HDRProcessorStub();
         preview = new Preview(applicationInterface, this.findViewById(R.id.preview));
         if( MyDebug.LOG )
             Log.d(TAG, "onCreate: time after creating preview: " + (System.currentTimeMillis() - debug_time));
